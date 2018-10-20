@@ -8,7 +8,7 @@ class ChatModel {
 }
   List<ChatModel> dummyData = [
     new ChatModel(
-        name: "GHR",
+        name: "John",
         message: "Olá, Bem vindo ao Chat",
         time: "15:30",
         avatarUrl:

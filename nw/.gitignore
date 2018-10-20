@@ -1,3 +1,4 @@
+layout/.vscode/
 .DS_Store
 .dart_tool/
 
@@ -7,3 +8,5 @@
 build/
 
 .flutter-plugins
+.vscode
+.idea
