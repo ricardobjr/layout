@@ -12,11 +12,16 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  web_socket_channel:
   cupertino_icons: ^0.1.2
-  translator: ^0.1.0+4
+  translator: ^0.1.0+5
   path_provider: ^0.4.1
   contacts_service: ^0.0.8
   simple_permissions: ^0.1.6
+  # speech_recognition: ^0.2.0+1
+  flutter_sound: ^1.1.5
+  intl:
+  permission: ^0.1.0
   
 
 dev_dependencies:

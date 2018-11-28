@@ -9,4 +9,10 @@ build/
 
 .flutter-plugins
 .vscode
-.idea
+.idea/
+data.txt
+.idea/workspace.xml
+.idea/libraries/Dart_Packages.xml
+.idea/libraries/Flutter_Plugins.xml
+
+

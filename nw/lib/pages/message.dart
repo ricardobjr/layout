@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-final defaultUserName = "Gabriel Pacheco";
+const defaultUserName = "John";
 
 class Msg extends StatelessWidget {
-  String txt;
+  String txt, name;
+ // bool isMine;
   final AnimationController animationController;
-  Msg({this.txt, this.animationController});
+  Msg({this.txt, this.animationController, this.name,/*  this.isMine = false */});
 
   @override
   Widget build(BuildContext context) {
+    if(name == null) name = defaultUserName;
     return SizeTransition(sizeFactor: CurvedAnimation(
       parent: animationController,
       curve: Curves.easeOut
@@ -21,13 +23,13 @@ class Msg extends StatelessWidget {
           children: <Widget>[
             Container(
               margin: const EdgeInsets.only(right: 10.0),
-              child: CircleAvatar(child: Text(defaultUserName[0])),
+              child: CircleAvatar(child: Text(name[0] ?? "G")),
             ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(defaultUserName, style: TextStyle(fontWeight: FontWeight.bold)/*Theme.of(context).textTheme.subhead */),
+                  Text(name, style: TextStyle(fontWeight: FontWeight.bold)/*Theme.of(context).textTheme.subhead */),
                   Container(
                     margin: const EdgeInsets.only(top: 6.0),
                     child: Text(txt, style: TextStyle(color: Colors.grey[800])),

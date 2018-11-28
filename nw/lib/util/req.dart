@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:nw/store/storage.dart';
 
@@ -11,8 +11,9 @@ Storage store = Storage();
 /* get current user as a Map */
 Future<Map> getMe() async {
   var str = await store.readData();
-  var username = str.split('~')[0];
-  var password = str.split('~')[1];
+  var dados = str.split("~");
+  var username = dados[0];
+  var password = dados[1];
 
   var clientID = "ts.crud.db";
   var body = "username=$username&password=$password&grant_type=password";
@@ -37,19 +38,21 @@ Future<Map> getMe() async {
   });
 
   //print("Second body: ${getMe.body}");
-
-  var userMap = jsonDecode(getMe.body);
-  return userMap as Map;
+    var userMap = jsonDecode(getMe.body);
+    return userMap as Map;
 }
 
 /* register new user if not already in db  */
-void createThisUser(String username, String password, String nativelang) async {
+void createThisUser(String username, String password, String nativelang,
+    String phoneNumber, String displayName) async {
   var clientID = "ts.crud.db";
 
   var json = {
     "username": "$username",
     "password": "$password",
-    "nativeLanguage": "$nativelang"
+    "nativeLanguage": "$nativelang",
+    "phoneNumber": "$phoneNumber",
+    "displayName": "$displayName",
   };
   var body = jsonEncode(json);
 
@@ -108,13 +111,13 @@ Future<List> getUserList() async {
 Future<int> getLastIdFromDatabase() async {
   var list = await getUserList();
 
-  //int counter;
+  // int counter;
   // list.forEach((u) {
   //   counter++;
   // });
-  //for(counter=0; counter<list.length; counter++) {}
+  // for(counter=0; counter<list.length; counter++) {}
   // var lastUser = list[counter];
 
   var lastUser = list[list.length - 1];
-  return (lastUser["id"] as int) + 1;
+  return (lastUser["id"] as int);
 }

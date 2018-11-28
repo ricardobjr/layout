@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:nw/models/chat_model.dart';
 import 'package:nw/pages/chat_room.dart';
 import 'package:nw/models/user.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:nw/store/storage.dart';
-import 'package:nw/util/req.dart' as db;
 
 class ChatScreen extends StatefulWidget {
+  final User me;
+  ChatScreen(this.me);
+
   @override
   ChatScreenState createState() {
     return new ChatScreenState();
@@ -13,42 +16,41 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  //  String _username;// = "novo_user_teste";
-  //  String _password;// = "1234";
-  // String _nativeLanguage;
-
   Storage store = Storage();
-  User me;
+  List lista;
 
   @override
   void initState() {
-
-    //initUser();
-
+    initList();
+    //print("Lista: ${lista.toList()}");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new ListView.builder(
-      itemCount: dummyData.length,
-      itemBuilder: (context, i) => new Column(children: <Widget>[
-            new Divider(height: 10.0),
-            new ListTile(
+    return Container(
+        child: SafeArea(
+            child: lista != null ? 
+            ListView.builder(
+              itemCount: /* dummyData.length, */ lista?.length ?? 0,
+              itemBuilder: (context, i) => new Column(children: <Widget>[
+                  new Divider(height: 10.0),
+                  new ListTile(
                 leading: new CircleAvatar(
                   foregroundColor: Theme.of(context).primaryColor,
                   backgroundColor: Colors.grey,
-                  backgroundImage: new NetworkImage(dummyData[i].avatarUrl),
+                  backgroundImage: new NetworkImage(dummyData[0].avatarUrl),
                 ),
                 title: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     new Text(
-                      dummyData[i].name,
+                      //dummyData[i].name,
+                      lista[i] ?? 'Teste',
                       style: new TextStyle(fontWeight: FontWeight.bold),
                     ),
                     new Text(
-                      dummyData[i].time,
+                      dummyData[0].time,
                       style: new TextStyle(color: Colors.grey, fontSize: 14.0),
                     ),
                   ],
@@ -56,85 +58,38 @@ class ChatScreenState extends State<ChatScreen> {
                 subtitle: new Container(
                   padding: const EdgeInsets.only(top: 5.0),
                   child: new Text(
-                    dummyData[i].message,
+                    dummyData[0].message,
                     style: new TextStyle(color: Colors.grey, fontSize: 15.0),
                   ),
                 ),
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChatRoom(),
+                      builder: (context) => ChatRoom(widget.me, chatContact: Contact()..displayName = lista[i],),
                     ))),
           ]),
-    );
+      ) : Center(child: CircularProgressIndicator())
+    ));
+  }
+
+  Future<List<String>> namesList() async {
+    var data = await store.readChatList();
+    var nameList = data.split('~');
+    nameList.remove('');
+
+    print("Name list: $nameList");
+    return nameList;
+  }
+
+  initList() async {
+    var x = await namesList();
+    setState(() {
+      this.lista = x;
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
   }
-
-  //void getList(List l) async => l = await db.getUserList(_username, _password);
-
-  // Future<User> getUser() async {
-  //   var userData = await db.getMe();
-  //   int id = userData["id"];
-  //   String username = userData["username"];
-  //   String nativelang = userData["nativeLanguage"];
-
-  //   return User(id: id, username: username, nativelang: nativelang);
-  // }
-
-  // void getCredentials() async {
-  //   var credentials = await store.readData();
-  //   setState(() {
-  //     _username = credentials.split('~')[0];
-  //     _password = credentials.split('~')[1];
-  //   });
-  // }
-
-  // Future<bool> get isRegistered async {
-  //   try {
-  //     var str = "";
-  //     var str2 = await store.readData();
-
-  //     str += str2;
-  //     if(str.length > 0 || str.contains('username')) {
-  //       return true;
-  //     }
-  //     else return false;
-
-  //   } 
-  //   catch(e) {
-  //     return false;
-  //   }
-  // }
-
-  // void initUser() async {
-  //   if((await isRegistered) == true) {
-  //     //print("If statement");
-
-  //     getCredentials();
-  //     me = await getUser();
-
-  //     print("Usuário ${me.username} with ID: ${me.id} speaks ${me.nativelang}");
-  //   }
-  //   else {
-  //     //print("Else statement");
-      
-  //     Locale myLocale = Localizations.localeOf(context);   //TODO: FIX THIS
-
-  //     var lastId = await db.getLastIdFromDatabase();
-  //     _username/* var autoUser */ = "_username_${lastId+1}";
-  //     _password/* var autoPassw */ = "_password_${lastId+1}";
-
-  //     db.createThisUser(_username/* autoUser */, _password/* autoPassw */, myLocale.languageCode);
-
-  //     store.writeData(_username/* autoUser */, _password/* autoPassw */);
-  //     getCredentials();
-  //     me = await getUser();
-      
-  //     print("Novo user cadastrado!!!!");
-  //   }
-  // }
 }
